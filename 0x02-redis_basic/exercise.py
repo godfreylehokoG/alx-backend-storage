@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from typing import Callable, Optional, Union
-from uuid import uuid4
+import uuid
 import redis
 from functools import wraps
 
