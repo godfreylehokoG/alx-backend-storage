@@ -6,30 +6,30 @@ import redis
 import requests
 from typing import Callable
 
-client = redis.Redis()
+r = redis.Redis()
 
 
-def count_requests(method: Callable) -> Callable:
-    """ Decortator to count how many request has been made"""
+def count_calls(method: Callable) -> Callable:
+    """ Decorator to know the number of calls """
 
     @wraps(method)
     def wrapper(url):
-        """ Function wrapper """
-        client.incr(f"count:{url}")
-        cached_html = client.get(f"cached:{url}")
+        """ Wrapper decorator """
+        r.incr(f"count:{url}")
+        cached_html = r.get(f"cached:{url}")
         if cached_html:
             return cached_html.decode('utf-8')
 
         html = method(url)
-        client.setex(f"cached:{url}", 10, html)
+        r.setex(f"cached:{url}", 10, html)
         return html
 
     return wrapper
 
 
-@count_requests
+@count_calls
 def get_page(url: str) -> str:
-    """Gets the html content of a web page
+    """ Get page
     """
     req = requests.get(url)
-    return req.text
+    return req.
